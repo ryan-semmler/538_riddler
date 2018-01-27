@@ -1,4 +1,5 @@
 from pprint import pprint
+from itertools import combinations
 
 
 """
@@ -20,29 +21,6 @@ class Piece:
 
     __radd__ = __add__
 
-    # def __lt__(self, other):
-    #     if type(other) == int:
-    #         return self.size < other
-    #     return self.size < other.size
-    #
-    # def __le__(self, other):
-    #     if type(other) == int:
-    #         return self.size <= other
-    #     return self.size <= other.size
-    #
-    # def __gt__(self, other):
-    #     if type(other) == int:
-    #         return self.size > other
-    #     return self.size > other.size
-    #
-    # def __ge__(self, other):
-    #     if type(other) == int:
-    #         return self.size >= other
-    #     return self.size >= other.size
-    #
-    # def __str__(self):
-    #     return "Piece " + self.name
-
     def __repr__(self):
         return "Piece " + self.name
 
@@ -57,14 +35,6 @@ class Group:
     def __iter__(self):
         for item in self.pieces:
             yield item
-
-    # def __eq__(self, other):
-    #     if type(other) != type(self):
-    #         return False
-    #     return sorted([piece.name for piece in self.pieces]) == sorted([piece.name for piece in other.pieces])
-
-    # def __len__(self):
-    #     return len(self.pieces)
 
     def __repr__(self):
         return f"Group: {self.pieces}"
@@ -97,6 +67,9 @@ neighbors = {
 
 
 def use_different_pieces(*groups):
+    """
+    Compares multiple groups to make sure they don't have any pieces in common. Returns True if valid.
+    """
     pieces = [piece for group in groups for piece in group.pieces]
     for piece in pieces:
         if pieces.count(piece) > 1:
@@ -105,6 +78,9 @@ def use_different_pieces(*groups):
 
 
 def has_no_neighbors(pieces_list):
+    """
+    Checks whether a list of pieces includes any neighboring pieces. Returns True if valid (no neighbors).
+    """
     for piece in pieces_list:
         for neighbor in neighbors[piece]:
             if neighbor in pieces_list:
@@ -113,6 +89,9 @@ def has_no_neighbors(pieces_list):
 
 
 def get_groups(pieces):
+    """
+    Each group of pieces adds up to 36 in area and contains no neighboring pieces.
+    """
     groups = []
     for u in range(len(pieces)):
         a = pieces[u]
@@ -145,14 +124,11 @@ def get_groups(pieces):
 
 
 def get_solutions(groups):
-    solutions = []
-    for w in range(len(groups) - 3):
-        for x in range(w + 1, len(groups) - 2):
-            for y in range(x + 1, len(groups) - 1):
-                for z in range(y + 1, len(groups)):
-                    if use_different_pieces(groups[w], groups[x], groups[y], groups[z]):
-                        solutions.append([groups[w], groups[x], groups[y], groups[z]])
-    return solutions
+    """
+    Each solution is made up of four groups of pieces. Each group totals 36 in area and contains no neighboring pieces.
+    """
+    all_solutions = combinations(groups, 4)
+    return [solution for solution in all_solutions if use_different_pieces(*solution)]
 
 
 def main():
