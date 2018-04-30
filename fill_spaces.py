@@ -1,20 +1,29 @@
 from math import ceil
 
 
-"""
-solves the Riddler Express at https://fivethirtyeight.com/features/how-fast-can-you-type-a-million-letters/
-"""
+# solves the Riddler Express at
+# https://fivethirtyeight.com/features/how-fast-can-you-type-a-million-letters/
 
 def get_min_m(n):
-    def inner(l):
-        # l is a number of consecutive unoccupied spaces.
-        # returns number of people who can fill those spaces.
+
+    def gap(l):
+        """
+        gap takes as an argument a number of consecutive unoccupied spaces
+        and returns the total number of people who can fit in those spaces.
+        Assumes there are people on both sides of the gap.
+        """
         if l < 3:
             return 0
-        return inner(int(l / 2)) + 1 + inner(ceil(l / 2) - 1)
+
+        # places one person in the middle of the gap,
+        # and starts over on the new smaller gaps on either side.
+        return gap(int(l / 2)) + 1 + gap(ceil(l / 2) - 1)
+
+    # start with m urinals for the minimum possible value of m for n people
     m = n * 2 - 1
     while True:
-        res = 2 + inner(m - 2)
-        if res >= n:
+        # two people on the ends plus the number that can fit between them
+        max_people = 2 + gap(m - 2)
+        if max_people >= n:
             return m
-        m += 2 * (n - res) - 1
+        m += 2 * (n - max_people) - 1
