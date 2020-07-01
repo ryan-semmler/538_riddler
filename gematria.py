@@ -2,6 +2,8 @@
 """If we consider all the whole numbers that are less than their alphanumeric value,
 what is the largest of these numbers?"""
 
+print("Highest number less than its alphanumeric value (and its alphanumeric value):")
+
 # map letters to their numerical value
 char_vals = {l: v + 1 for v, l in enumerate('abcdefghijklmnopqrstuvwxyz')}
 
@@ -56,7 +58,10 @@ def score(n): return sum(char_vals[c] for c in wordify(n) if c.isalpha())
 
 
 # find the highest number for which the number is less than its numeric score
-for i in range(1, 1001):
-    if i < score(i):
-        print(f"{i} ({score(i)})")
-    print("Done.")
+def get_highest():
+    for i in range(1000, 0, -1):
+        if i < score(i):
+            return f"{i} ({score(i)})"
+
+
+print(get_highest())
